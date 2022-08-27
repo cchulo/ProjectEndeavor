@@ -1,0 +1,10 @@
+# Build directories
+cmake-build-*
+bin/
+
+# Conan files (depends how conan is configured)
+conan.lock
+conanbuildinfo.cmake
+conanbuildinfo.txt
+conaninfo.txt
+graph_info.json
