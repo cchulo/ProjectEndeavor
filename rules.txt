@@ -143,4 +143,3 @@ readability-static-definition-in-anonymous-namespace
 readability-string-compare
 readability-uniqueptr-delete-release
 readability-use-anyofallof
-
