@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstdlib>
+#include <vector>
 
 const uint32_t kWidth = 800;
 const uint32_t kHeight = 600;
@@ -49,6 +50,17 @@ class HelloTriangleApplication {
     const char **glfw_extensions;
     glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
 
+    uint32_t extension_count = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
+    std::vector<VkExtensionProperties> extensions(extension_count);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, extensions.data());
+
+    std::cout << "available extensions:\n";
+
+    for (const auto &kExtension : extensions) {
+      std::cout << '\t' << kExtension.extensionName << '\n';
+    }
+
     create_info.enabledExtensionCount = glfw_extension_count;
     create_info.ppEnabledExtensionNames = glfw_extensions;
 
@@ -70,13 +82,14 @@ class HelloTriangleApplication {
   }
 
   void Cleanup() {
+    vkDestroyInstance(_instance, nullptr);
     glfwDestroyWindow(_window);
     glfwTerminate();
   }
 };
 
 int main() {
-  HelloTriangleApplication app;
+  HelloTriangleApplication app{};
 
   try {
     app.Run();
