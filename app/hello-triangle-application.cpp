@@ -12,27 +12,27 @@ const uint32_t kHeight = 600;
 
 class HelloTriangleApplication {
  public:
-  void run() {
-    initWindow();
-    initVulkan();
-    mainLoop();
-    cleanup();
+  void Run() {
+    InitWindow();
+    InitVulkan();
+    MainLoop();
+    Cleanup();
   }
 
  private:
 
-  GLFWwindow *window_;
-  VkInstance instance_;
-  void initWindow() {
+  GLFWwindow *_window;
+  VkInstance _instance;
+  void InitWindow() {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-    window_ = glfwCreateWindow(kWidth, kHeight, "Vulkan", nullptr, nullptr);
+    _window = glfwCreateWindow(kWidth, kHeight, "Vulkan", nullptr, nullptr);
   }
 
-  void createInstance() {
+  void CreateInstance() {
     VkApplicationInfo app_info{};
     app_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     app_info.pApplicationName = "Hello Triangle";
@@ -45,18 +45,18 @@ class HelloTriangleApplication {
     create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   }
 
-  void initVulkan() {
-    createInstance();
+  void InitVulkan() {
+    CreateInstance();
   }
 
-  void mainLoop() {
-    while (!glfwWindowShouldClose(window_)) {
+  void MainLoop() {
+    while (!glfwWindowShouldClose(_window)) {
       glfwPollEvents();
     }
   }
 
-  void cleanup() {
-    glfwDestroyWindow(window_);
+  void Cleanup() {
+    glfwDestroyWindow(_window);
     glfwTerminate();
   }
 };
@@ -65,7 +65,7 @@ int main() {
   HelloTriangleApplication app;
 
   try {
-    app.run();
+    app.Run();
   } catch (const std::exception &e) {
     std::cerr << e.what() << std::endl;
     return EXIT_FAILURE;

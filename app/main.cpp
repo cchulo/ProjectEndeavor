@@ -12,18 +12,18 @@ int main() {
   glfwInit();
 
   glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-  GLFWwindow *window = glfwCreateWindow(800, 600, "Vulkan window_", nullptr, nullptr);
+  GLFWwindow *window = glfwCreateWindow(800, 600, "Vulkan _window", nullptr, nullptr);
 
-  uint32_t extensionCount = 0;
-  vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+  uint32_t extension_count = 0;
+  vkEnumerateInstanceExtensionProperties(nullptr, &extension_count, nullptr);
 
-  std::cout << extensionCount << " extensions supported\n";
+  std::cout << extension_count << " extensions supported\n";
 
   glm::mat4 matrix;
   glm::vec4 vec;
   auto test = matrix * vec;
 
-  while(!glfwWindowShouldClose(window)) {
+  while( !glfwWindowShouldClose(window)) {
     glfwPollEvents();
   }
 
