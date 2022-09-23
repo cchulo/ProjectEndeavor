@@ -43,6 +43,20 @@ class HelloTriangleApplication {
 
     VkInstanceCreateInfo create_info{};
     create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    create_info.pApplicationInfo = &app_info;
+
+    uint32_t glfw_extension_count = 0;
+    const char **glfw_extensions;
+    glfw_extensions = glfwGetRequiredInstanceExtensions(&glfw_extension_count);
+
+    create_info.enabledExtensionCount = glfw_extension_count;
+    create_info.ppEnabledExtensionNames = glfw_extensions;
+
+    create_info.enabledLayerCount = 0;
+
+    if (vkCreateInstance(&create_info, nullptr, &_instance) != VK_SUCCESS) {
+      throw std::runtime_error("failed to create instance!");
+    }
   }
 
   void InitVulkan() {
