@@ -1,4 +1,5 @@
 #pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnreachableCode"
 #pragma ide diagnostic ignored "Simplify"
 #pragma ide diagnostic ignored "OCUnusedMacroInspection"
 #define GLFW_INCLUDE_VULKAN
@@ -25,7 +26,7 @@ const bool kEnableValidationLayers = false;
 const bool kEnableValidationLayers = true;
 #endif
 
-VkResult CreateDebugUtilsMessengerEXT(
+VkResult CreateDebugUtilsMessengerExt(
     VkInstance instance,
     const VkDebugUtilsMessengerCreateInfoEXT *pCreateInfo,
     const VkAllocationCallbacks *pAllocator,
@@ -40,7 +41,7 @@ VkResult CreateDebugUtilsMessengerEXT(
   }
 }
 
-void DestroyDebugUtilsMessengerEXT(
+void DestroyDebugUtilsMessengerExt(
     VkInstance instance,
     VkDebugUtilsMessengerEXT debugMessenger,
     const VkAllocationCallbacks *pAllocator) {
@@ -172,6 +173,8 @@ class HelloTriangleApplication {
     }
   }
 
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "UnusedParameter"
   static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(
       VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
       VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -186,6 +189,7 @@ class HelloTriangleApplication {
 
     return VK_FALSE;
   }
+#pragma clang diagnostic pop
 
   void InitVulkan() {
     CreateInstance();
@@ -212,7 +216,7 @@ class HelloTriangleApplication {
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
     PopulateDebugMessengerCreateInfo(createInfo);
 
-    if (CreateDebugUtilsMessengerEXT(
+    if (CreateDebugUtilsMessengerExt(
         _instance,
         &createInfo,
         nullptr,
@@ -229,7 +233,7 @@ class HelloTriangleApplication {
 
   void Cleanup() {
     if (kEnableValidationLayers) {
-      DestroyDebugUtilsMessengerEXT(_instance, _debugMessenger, nullptr);
+      DestroyDebugUtilsMessengerExt(_instance, _debugMessenger, nullptr);
     }
 
     vkDestroyInstance(_instance, nullptr);
