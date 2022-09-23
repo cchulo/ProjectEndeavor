@@ -7,9 +7,20 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
+#include <cstring>
 
 const uint32_t kWidth = 800;
 const uint32_t kHeight = 600;
+const std::vector<const char *> kValidationLayers = {
+    "VK_LAYER_KHRONOS_validation"
+};
+
+const bool kEnableValidationLayers =
+#ifdef NDEBUG
+    false;
+#else
+    true;
+#endif
 
 class HelloTriangleApplication {
  public:
@@ -69,6 +80,26 @@ class HelloTriangleApplication {
     if (vkCreateInstance(&create_info, nullptr, &_instance) != VK_SUCCESS) {
       throw std::runtime_error("failed to create instance!");
     }
+  }
+
+  bool CheckValidationLayerSupport() {
+    uint32_t layer_count;
+    vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+
+    std::vector<VkLayerProperties> available_layers(layer_count);
+    vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
+    bool layer_found = false;
+
+    for (const char *layer_name : kValidationLayers) {
+      for (const auto &layer_properties : available_layers) {
+        if (strcmp(layer_name, layer_properties.layerName) == 0) {
+          layer_found = true;
+          break;
+        }
+      }
+    }
+
+    return layer_found;
   }
 
   void InitVulkan() {
