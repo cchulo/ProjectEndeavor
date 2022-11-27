@@ -54,7 +54,7 @@ void DestroyDebugUtilsMessengerExt(
   }
 }
 
-class HelloTriangleApplication {
+class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-init)
  public:
   void Run() {
     InitWindow();
@@ -222,7 +222,7 @@ class HelloTriangleApplication {
     }
   }
 
-  bool IsDeviceSuitable(VkPhysicalDevice device) {
+  static bool IsDeviceSuitable(VkPhysicalDevice device) {
     // VkPhysicalDeviceProperties deviceProperties;
     // vkGetPhysicalDeviceProperties(device, &deviceProperties);
 
@@ -239,7 +239,7 @@ class HelloTriangleApplication {
   struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
 
-    bool IsComplete() const {
+    [[nodiscard]] bool IsComplete() const {
       return graphicsFamily.has_value();
     }
   };
@@ -262,7 +262,7 @@ class HelloTriangleApplication {
       if (indices.IsComplete()) {
         break;
       }
-      
+
       i++;
     }
 
