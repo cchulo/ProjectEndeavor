@@ -197,6 +197,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     CreateInstance();
     SetupDebugMessenger();
     PickPhysicalDevice();
+    CreateLogicalDevice();
   }
 
   void PickPhysicalDevice() {
@@ -220,6 +221,10 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     if (_physicalDevice == VK_NULL_HANDLE) {
       throw std::runtime_error("failed to find a suitable GPU!");
     }
+  }
+
+  void CreateLogicalDevice() {
+    
   }
 
   static bool IsDeviceSuitable(VkPhysicalDevice device) {
