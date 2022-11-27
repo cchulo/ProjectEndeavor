@@ -2,8 +2,8 @@
 <project version="4">
   <component name="CMakeSharedSettings">
     <configurations>
-      <configuration PROFILE_NAME="Debug-Linux-x86_64" ENABLED="true" GENERATION_DIR="bin/Debug/linux-x86_64" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Default" />
-      <configuration PROFILE_NAME="Release-Linux-x86_64" ENABLED="false" GENERATION_DIR="bin/Release/Linux-x86_64" CONFIG_NAME="Release" TOOLCHAIN_NAME="Default" />
+      <configuration PROFILE_NAME="Debug-linux-x86_64" ENABLED="true" GENERATION_DIR="bin/Debug/linux-x86_64" CONFIG_NAME="Debug" TOOLCHAIN_NAME="Default" GENERATION_OPTIONS="-G Ninja" />
+      <configuration PROFILE_NAME="Release-linux-x86_64" ENABLED="false" GENERATION_DIR="bin/Release/linux-x86_64" CONFIG_NAME="Release" TOOLCHAIN_NAME="Default" GENERATION_OPTIONS="-G Ninja" />
     </configurations>
   </component>
 </project>
