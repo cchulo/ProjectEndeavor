@@ -67,8 +67,10 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
 
   GLFWwindow *_window;
   VkInstance _instance;
+  VkDevice _device;
   VkDebugUtilsMessengerEXT _debugMessenger;
   VkPhysicalDevice _physicalDevice = VK_NULL_HANDLE;
+  VkQueue graphicsQueue;
   void InitWindow() {
     glfwInit();
 
@@ -224,7 +226,38 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   void CreateLogicalDevice() {
-    
+    QueueFamilyIndices indices = FindQueueFamilies(_physicalDevice);
+
+    VkDeviceQueueCreateInfo queueCreateInfo{};
+    queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+    queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
+    queueCreateInfo.queueCount = 1;
+
+    float queuePriority = 1.0f;
+    queueCreateInfo.pQueuePriorities = &queuePriority;
+    VkPhysicalDeviceFeatures deviceFeatures{};
+
+    VkDeviceCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+
+    createInfo.pQueueCreateInfos = &queueCreateInfo;
+    createInfo.queueCreateInfoCount = 1;
+    createInfo.pEnabledFeatures = &deviceFeatures;
+
+    createInfo.enabledExtensionCount = 0;
+
+    if (kEnableValidationLayers) {
+      createInfo.enabledLayerCount = static_cast<uint32_t>(kValidationLayers.size());
+      createInfo.ppEnabledLayerNames = kValidationLayers.data();
+    } else {
+      createInfo.enabledLayerCount = 0;
+    }
+
+    if (vkCreateDevice(_physicalDevice, &createInfo, nullptr, &_device) != VK_SUCCESS) {
+      throw std::runtime_error("failed to create logical device!");
+    }
+
+    vkGetDeviceQueue(_device, indices.graphicsFamily.value(), 0, &graphicsQueue);
   }
 
   static bool IsDeviceSuitable(VkPhysicalDevice device) {
@@ -311,6 +344,8 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   void Cleanup() {
+    vkDestroyDevice(_device, nullptr);
+
     if (kEnableValidationLayers) {
       DestroyDebugUtilsMessengerExt(_instance, _debugMessenger, nullptr);
     }
