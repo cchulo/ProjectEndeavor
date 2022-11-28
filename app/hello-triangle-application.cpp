@@ -5,7 +5,6 @@
 #define GLFW_INCLUDE_VULKAN
 
 #include <GLFW/glfw3.h>
-
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
@@ -13,6 +12,9 @@
 #include <set>
 #include <stdexcept>
 #include <vector>
+#include <cstdint>
+#include <limits>
+#include <algorithm>
 
 const uint32_t kWidth = 800;
 const uint32_t kHeight = 600;
@@ -209,6 +211,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     CreateSurface();
     PickPhysicalDevice();
     CreateLogicalDevice();
+    CreateSwapChain();
   }
 
   void CreateSurface() {
@@ -386,6 +389,84 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     }
 
     return details;
+  }
+
+  // color depth of the swap chain
+  VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+    for (const auto& availableFormat : availableFormats) {
+      if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
+          availableFormat.format == VK_COLORSPACE_SRGB_NONLINEAR_KHR) {
+        return availableFormat;
+      }
+    }
+
+    return availableFormats[0];
+  }
+
+  // frequency images are displayed from the queue from the swap chain
+  VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
+    for (const auto& availablePresentMode : availablePresentModes) {
+      // prefer triple buffering
+      if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
+        return availablePresentMode;
+      }
+    }
+
+    // but default to vsync if triple buffering is not available
+    return VK_PRESENT_MODE_FIFO_KHR;
+  }
+
+  void CreateSwapChain() {
+    SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(_physicalDevice);
+
+    VkSurfaceFormatKHR  surfaceFormat = ChooseSwapSurfaceFormat(swapChainSupport.formats);
+    VkPresentModeKHR  presentMode = ChooseSwapPresentMode(swapChainSupport.presentModes);
+    VkExtent2D extent = ChooseSwapExtent(swapChainSupport.capabilities);
+
+    // recommended to use one additional image in addition to minimum minImageCount
+    uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
+
+    if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+      imageCount = swapChainSupport.capabilities.maxImageCount;
+    }
+
+    VkSwapchainCreateInfoKHR createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    createInfo.surface = _surface;
+
+    createInfo.minImageCount = imageCount;
+    createInfo.imageFormat = surfaceFormat.format;
+    createInfo.imageColorSpace = surfaceFormat.colorSpace;
+    createInfo.imageExtent = extent;
+    createInfo.imageArrayLayers = 1; // always 1 unless creating stereoscopic 3D app
+    createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+  }
+
+  // the resolution of the images being rendered from the swap chain
+  VkExtent2D ChooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities) {
+    if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
+      return capabilities.currentExtent;
+    } else {
+      int width, height;
+      glfwGetFramebufferSize(_window, &width, &height);
+
+      VkExtent2D actualExtent = {
+          static_cast<uint32_t>(width),
+          static_cast<uint32_t>(height)
+      };
+
+      actualExtent.width = std::clamp(
+          actualExtent.width,
+          capabilities.minImageExtent.width,
+          capabilities.maxImageExtent.width);
+
+      actualExtent.height = std::clamp(
+          actualExtent.height,
+          capabilities.minImageExtent.height,
+          capabilities.maxImageExtent.height);
+
+      return actualExtent;
+    }
   }
 
   static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
