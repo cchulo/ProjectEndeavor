@@ -1,16 +1,17 @@
 cmake_minimum_required(VERSION 3.23)
-project(ProjectEndeavor)
 
+# General build settings
+project(ProjectEndeavor)
 set(CMAKE_CXX_STANDARD 20)
 
-# Set output directories for anyone not using CLion
-
+# Echo system/build information
 message("system name: ${CMAKE_SYSTEM_NAME}")
 message("source directory: ${CMAKE_SOURCE_DIR}")
 message("binary directory: ${CMAKE_BINARY_DIR}")
 message("build type: ${CMAKE_BUILD_TYPE}")
 message("architecture: ${CMAKE_SYSTEM_PROCESSOR}")
 
+# Set output directories for anyone not using CLion
 set(TARGET_DIR_FOR_CMAKE_FILES cmake-build-${CMAKE_BUILD_TYPE})
 string(TOLOWER ${TARGET_DIR_FOR_CMAKE_FILES} TARGET_DIR_FOR_CMAKE_FILES)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin/${TARGET_DIR_FOR_CMAKE_FILES})
@@ -57,17 +58,20 @@ foreach (X IN LISTS ENDEV_TARGETS)
             COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Compiling shaders..."
     )
 
-    add_custom_command(
-            TARGET ${X}
-            PRE_BUILD
-            COMMENT "compiling shader.vert to vert.spv"
-            COMMAND glslc ${PROJECT_SOURCE_DIR}/src/core/shaders/shader.vert -o ${SHADER_OUTPUT_DIR}/vert.spv
-    )
+    file(GLOB CORE_SHADERS ${PROJECT_SOURCE_DIR}/src/core/shaders/*)
+    foreach (SHADER_PATH IN LISTS CORE_SHADERS)
+        get_filename_component(SHADER ${SHADER_PATH} NAME)
+        add_custom_command(
+                TARGET ${X}
+                PRE_BUILD
+                COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Compiling ${SHADER} to ${SHADER}.spv"
+        )
 
-    add_custom_command(
-            TARGET ${X}
-            PRE_BUILD
-            COMMENT "compiling shader.frag to frag.spv"
-            COMMAND glslc ${PROJECT_SOURCE_DIR}/src/core/shaders/shader.frag -o ${SHADER_OUTPUT_DIR}/frag.spv
-    )
+        add_custom_command(
+                TARGET ${X}
+                PRE_BUILD
+                COMMAND glslc ${SHADER_PATH} -o ${SHADER_OUTPUT_DIR}/${SHADER}.spv
+                BYPRODUCTS ${SHADER_OUTPUT_DIR}/${SHADER}.spv
+        )
+    endforeach ()
 endforeach ()
