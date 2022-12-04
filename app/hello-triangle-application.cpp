@@ -72,7 +72,6 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
  private:
-
   GLFWwindow *_window;
   VkInstance _instance;
   VkDevice _device;
@@ -81,6 +80,11 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   VkQueue _graphicsQueue;
   VkQueue _presentQueue;
   VkSurfaceKHR _surface;
+  VkSwapchainKHR _swapChain;
+  std::vector<VkImage> _swapChainImages;
+  VkFormat _swapChainImageFormat;
+  VkExtent2D _swapChainExtent;
+
   void InitWindow() {
     glfwInit();
 
@@ -440,6 +444,35 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     createInfo.imageExtent = extent;
     createInfo.imageArrayLayers = 1; // always 1 unless creating stereoscopic 3D app
     createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+
+    QueueFamilyIndices indices = FindQueueFamilies(_physicalDevice);
+    uint32_t queueFamilyIndices[] = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+    if (indices.graphicsFamily != indices.presentFamily) {
+      createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
+      createInfo.queueFamilyIndexCount = 2;
+      createInfo.pQueueFamilyIndices = queueFamilyIndices;
+    } else {
+      createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+      createInfo.queueFamilyIndexCount = 0; // Optional
+      createInfo.pQueueFamilyIndices = nullptr; // Optional
+    }
+
+    createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
+    createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    createInfo.presentMode = presentMode;
+    createInfo.clipped = VK_TRUE;
+    createInfo.oldSwapchain = VK_NULL_HANDLE;
+
+    if (vkCreateSwapchainKHR(_device, &createInfo, nullptr, &_swapChain) != VK_SUCCESS) {
+      throw std::runtime_error("failed to create swap chain!");
+    }
+
+    vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, nullptr);
+    _swapChainImages.resize(imageCount);
+    vkGetSwapchainImagesKHR(_device, _swapChain, &imageCount, _swapChainImages.data());
+    _swapChainImageFormat = surfaceFormat.format;
+    _swapChainExtent = extent;
   }
 
   // the resolution of the images being rendered from the swap chain
@@ -505,6 +538,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   void Cleanup() {
+    vkDestroySwapchainKHR(_device, _swapChain, nullptr);
     vkDestroyDevice(_device, nullptr);
 
     if (kEnableValidationLayers) {
