@@ -402,7 +402,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
     for (const auto& availableFormat : availableFormats) {
       if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
-          availableFormat.format == VK_COLORSPACE_SRGB_NONLINEAR_KHR) {
+          availableFormat.colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR) {
         return availableFormat;
       }
     }
