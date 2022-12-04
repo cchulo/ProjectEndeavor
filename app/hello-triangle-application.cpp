@@ -218,6 +218,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     CreateLogicalDevice();
     CreateSwapChain();
     CreateImageViews();
+    CreateGraphicsPipeline();
   }
 
   void CreateSurface() {
@@ -529,6 +530,10 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
         throw std::runtime_error("failed to create image views!");
       }
     }
+  }
+
+  void CreateGraphicsPipeline() {
+    
   }
 
   static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
