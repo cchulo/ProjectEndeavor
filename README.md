@@ -6,10 +6,12 @@ Custom Vulkan 3D engine written in C++
 ## Compiling
 
 ### Required Tools
+
 - Python3 3.6+ (3.10 recommended)
-  - Conan 1.52+
-  - pipx (optional, for installing Conan instead of using regular pip)
+    - Conan 1.52+
 - CLion (optional, any IDE will do)
+    - Recommended plugins:
+        - [GLSL](https://plugins.jetbrains.com/plugin/18470-glsl)
 - Clang 14+
 - CMake 3.24+
 - Ninja 1.11
