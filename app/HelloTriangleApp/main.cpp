@@ -533,7 +533,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   void CreateGraphicsPipeline() {
-    
+
   }
 
   static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {

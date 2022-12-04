@@ -7,8 +7,9 @@ set(CMAKE_CXX_STANDARD 20)
 include(${PROJECT_SOURCE_DIR}/bin/conan/conanbuildinfo.cmake)
 conan_basic_setup()
 
-add_executable(HelloTriangleApp app/hello-triangle-application.cpp)
-add_executable(ProjectEndeavor app/main.cpp)
+add_executable(HelloTriangleApp app/HelloTriangleApp/main.cpp)
+add_executable(CosmosVk app/CosmosVk/main.cpp)
+
 find_package(Vulkan REQUIRED)
-target_link_libraries(ProjectEndeavor ${CONAN_LIBS} Vulkan::Vulkan)
+target_link_libraries(CosmosVk ${CONAN_LIBS} Vulkan::Vulkan)
 target_link_libraries(HelloTriangleApp ${CONAN_LIBS} Vulkan::Vulkan)
