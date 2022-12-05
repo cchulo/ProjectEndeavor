@@ -63,13 +63,11 @@ foreach (X IN LISTS ENDEV_TARGETS)
         get_filename_component(SHADER ${SHADER_PATH} NAME)
         add_custom_command(
                 TARGET ${X}
-                PRE_BUILD
                 COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --cyan "Compiling ${SHADER} to ${SHADER}.spv"
         )
 
         add_custom_command(
                 TARGET ${X}
-                PRE_BUILD
                 COMMAND glslc ${SHADER_PATH} -o ${SHADER_OUTPUT_DIR}/${SHADER}.spv
                 BYPRODUCTS ${SHADER_OUTPUT_DIR}/${SHADER}.spv
         )
