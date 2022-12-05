@@ -568,7 +568,11 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     renderPassInfo.subpassCount = 1;
     renderPassInfo.pSubpasses = &subpass;
 
-    if (vkCreateRenderPass(_device, &renderPassInfo, nullptr, &_renderPass) != VK_SUCCESS) {
+    if (vkCreateRenderPass(
+            _device,
+            &renderPassInfo,
+            nullptr,
+            &_renderPass) != VK_SUCCESS) {
       throw std::runtime_error("failed to create render pass!");
     }
   }
