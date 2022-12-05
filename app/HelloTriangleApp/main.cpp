@@ -301,7 +301,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
 
     bool extensionsSupported = CheckDeviceExtensionSupport(device);
 
-    bool swapChainAdequate = false;
+    bool swapChainAdequate;
     if (extensionsSupported) {
       SwapChainSupportDetails swapChainSupport = QuerySwapChainSupport(device);
       swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
@@ -336,7 +336,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   };
 
   struct SwapChainSupportDetails {
-    VkSurfaceCapabilitiesKHR capabilities;
+    VkSurfaceCapabilitiesKHR capabilities{};
     std::vector<VkSurfaceFormatKHR> formats;
     std::vector<VkPresentModeKHR> presentModes;
   };
@@ -401,7 +401,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   // color depth of the swap chain
-  VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
+  static VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) {
     for (const auto& availableFormat : availableFormats) {
       if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
           availableFormat.colorSpace == VK_COLORSPACE_SRGB_NONLINEAR_KHR) {
@@ -413,7 +413,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   // frequency images are displayed from the queue from the swap chain
-  VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
+  static VkPresentModeKHR ChooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes) {
     for (const auto& availablePresentMode : availablePresentModes) {
       // prefer triple buffering
       if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR) {
@@ -683,7 +683,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
       throw std::runtime_error("failed to open file " + filename);
     }
 
-    size_t fileSize = (size_t) file.tellg();
+    auto fileSize = (std::streamsize) file.tellg();
     std::vector<char> buffer(fileSize);
 
     file.seekg(0);
