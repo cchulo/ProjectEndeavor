@@ -89,6 +89,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   VkRenderPass _renderPass;
   VkPipelineLayout _pipelineLayout;
   VkPipeline _graphicsPipeline;
+  std::vector<VkFramebuffer> _swapChainFrameBuffers;
 
   void InitWindow() {
     glfwInit();
@@ -224,6 +225,7 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     CreateImageViews();
     CreateRenderPass();
     CreateGraphicsPipeline();
+    CreateFramebuffers();
   }
 
   void CreateSurface() {
@@ -776,6 +778,29 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
     return buffer;
   }
 
+  void CreateFramebuffers() {
+    _swapChainFrameBuffers.resize(_swapChainImages.size());
+
+    for (size_t i = 0; i < _swapChainImages.size(); i++) {
+      VkImageView attachments[] = {
+        _swapChainImageViews[i]
+      };
+
+      VkFramebufferCreateInfo framebufferInfo{};
+      framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+      framebufferInfo.renderPass = _renderPass;
+      framebufferInfo.attachmentCount = 1;
+      framebufferInfo.pAttachments = attachments;
+      framebufferInfo.width = _swapChainExtent.width;
+      framebufferInfo.height = _swapChainExtent.height;
+      framebufferInfo.layers = 1;
+
+      if (vkCreateFramebuffer(_device, &framebufferInfo, nullptr, &_swapChainFrameBuffers[i]) != VK_SUCCESS) {
+        throw std::runtime_error("failed to create framebuffer!");
+      }
+    }
+  }
+
   static void PopulateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT &createInfo) {
     createInfo = {};
     createInfo.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
@@ -812,6 +837,9 @@ class HelloTriangleApplication { // NOLINT(cppcoreguidelines-pro-type-member-ini
   }
 
   void Cleanup() {
+    for (auto framebuffer : _swapChainFrameBuffers) {
+      vkDestroyFramebuffer(_device, framebuffer, nullptr);
+    }
     vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
     vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
     vkDestroyRenderPass(_device, _renderPass, nullptr);
