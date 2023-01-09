@@ -29,9 +29,9 @@ conan_basic_setup(NO_OUTPUT_DIRS) # We do not want conan to modify output direct
 find_package(Vulkan REQUIRED)
 
 # List of targets to generate build files
-set(ENDEV_TARGETS HelloTriangleApp CosmosVk)
+set(APP_TARGETS HelloTriangleApp CosmosVk)
 
-foreach (X IN LISTS ENDEV_TARGETS)
+foreach (X IN LISTS APP_TARGETS)
     message("generating ${X}")
     add_executable(${X} app/${X}/main.cpp)
     target_link_libraries(${X} ${CONAN_LIBS} Vulkan::Vulkan)
